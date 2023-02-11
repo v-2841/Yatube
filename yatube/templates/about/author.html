@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+Об авторе проекта
+{% endblock %}
+{% block content %}
+<h1>Привет!</h1><br>
+<p>Меня зовут Виталий Павлов.</p>
+<p style="text-align: left">
+  Здесь вы можете найти мой в профиль в
+  <a href="https://github.com/v-2841" target="_blank" rel="noopener">GitHub</a>,
+  резюме пока нет (🤡), и вот еще есть страница в
+  <a href="https://vk.com/pavlov_vitaliy" target="_blank" rel="noopener">vk</a>.
+</p>
+<p>
+  Вдохновляет меня еда и сон, а про личное ощущение в этом мире есть отличный видос, дополнить особо нечем)
+</p>
+<div class="text-center">
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/p-4jQOl7eO8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</div>
+<br>
+<p>Во время работы мне помогала моя жена.</p>
+<p>Ну и фото рабочей кружки также прилагается.</p>
+<div class="text-center">
+  <img src={% static "img/mug.jpg" %} width="600"/>
+</div>
+{% endblock %}

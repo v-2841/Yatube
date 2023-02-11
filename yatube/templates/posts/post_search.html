@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}
+  Поиск по запросу: {{ search_text|truncatechars:30 }}
+{% endblock %}
+{% block content %}
+  <h1>Поиск по запросу: {{ search_text }}</h1>
+  {% for post in page_obj %}
+    {% include 'posts/includes/article.html' %}
+  {% endfor %}
+  {% include 'posts/includes/paginator.html' %}
+{% endblock %}

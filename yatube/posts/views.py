@@ -1,6 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-# from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_http_methods
 
 from .forms import PostForm, CommentForm
@@ -8,7 +7,6 @@ from .models import Post, Group, User, Follow
 from .utils import paginator_func
 
 
-# @cache_page(20, key_prefix='index_page')
 def index(request):
     post_list = Post.objects.all()
     page_obj = paginator_func(request, post_list)
@@ -50,7 +48,7 @@ def post_detail(request, post_id):
     comments = post.comments.all()
     context = {
         'post': post,
-        'form': CommentForm,
+        'form': CommentForm(request.POST),
         'comments': comments,
     }
     return render(request, 'posts/post_detail.html', context)
@@ -140,10 +138,11 @@ def follow_index(request):
 @login_required
 def profile_follow(request, username):
     user = get_object_or_404(User, username=username)
-    Follow.objects.create(
-        user=request.user,
-        author=user,
-    )
+    if user != request.user:
+        Follow.objects.get_or_create(
+            user=request.user,
+            author=user,
+        )
     return redirect('posts:profile', username=username)
 
 

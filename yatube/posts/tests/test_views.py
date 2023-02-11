@@ -225,7 +225,8 @@ class ViewsTests(TestCase):
         self.assertIn(new_post.text, response.content.decode('utf-8'))
         cache.clear()
         response = self.authorized_client.get(reverse('posts:index'))
-        self.assertNotIn(new_post.text, response.content.decode('utf-8'))
+        cache_post = response.context['page_obj'][0]
+        self.assertNotEqual(new_post, cache_post)
 
     def test_new_post(self):
         """Новый пост появляется в follow тех, кто на него подписан"""

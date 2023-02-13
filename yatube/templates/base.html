@@ -35,11 +35,13 @@
         <div>Место для заголовка</div>
       {% endblock %}
     </title>
+    <script src="{% static "js/bootstrap.bundle.js" %}"></script>
+    <script src="{% static "js/jquery-3.6.3.min.js" %}"></script>
   </head>
   <body>
     <header>{% include 'includes/header.html' %}</header>
     <main>
-      <div class="container py-5" style="max-width:720px;">
+      <div class="container py-5 pe-5 ps-5" style="max-width:1080px;">
         {% block content %}
           <div>Место основного контента</div>
         {% endblock %}
@@ -52,7 +54,5 @@
     <footer class="border-top text-center py-3">
       {% include 'includes/footer.html' %}
     </footer>
-    <script src="{% static "js/jquery-3.6.3.min.js" %}"></script>
-    <script src="{% static "js/bootstrap.bundle.min.js" %}"></script>
   </body>
 </html>

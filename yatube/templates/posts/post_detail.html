@@ -28,11 +28,19 @@
     <p>
       {{ post.text|linebreaksbr }}
     </p>
-    <div style="text-align:center">
-      {% thumbnail post.image "1080" crop="center" upscale=True as im %}
-        <img class="card-img mb-4 mt-4" src="{{ im.url }}" style="max-width:720px; max-height:720px; width:auto; height:auto">
-      {% endthumbnail %}
-    </div>
+    {% if post.image %}
+      <div class="text-center">
+        {% if post.image|is_portrait %}
+          {% thumbnail post.image "x720" crop="center" as im %}
+            <img class="card-img mb-4 mt-4" src="{{ im.url }}" style="max-width:720px; max-height:720px; object-fit: contain;">
+          {% endthumbnail %}
+        {% else %}
+          {% thumbnail post.image "720" crop="center" as im %}
+            <img class="card-img mb-4 mt-4" src="{{ im.url }}" style="max-width:720px; max-height:720px; object-fit: contain;">
+          {% endthumbnail %}
+        {% endif %}
+      </div>
+    {% endif %}
     {% if user == post.author %}
       <a class="btn btn-primary mb-2 mt-2 me-2" href="{% url 'posts:post_edit' post.id %}" >
         редактировать пост
@@ -44,5 +52,5 @@
     {% endif %}
     {% include 'posts/includes/comments.html' %}
   </article>
-</div> 
+</div>
 {% endblock %}

@@ -1,5 +1,4 @@
 {% load thumbnail %}
-{% load user_filters %}
 <article>
   <h4><a href="{% url 'posts:profile' post.author.username %}" class="text-decoration-none" > {{ post.author.get_full_name }} </a></h4>
   {% if post.group %}
@@ -9,16 +8,10 @@
   {{ post.text|linebreaksbr }}
   <br>
   {% if post.image %}
-    <div class="text-center">
-      {% if post.image|is_portrait %}
-        {% thumbnail post.image "x720" crop="center" as im %}
-          <img class="card-img mb-4 mt-4" src="{{ im.url }}" style="max-width:720px; max-height:720px; object-fit: contain;">
-        {% endthumbnail %}
-      {% else %}
-        {% thumbnail post.image "720" crop="center" as im %}
-          <img class="card-img mb-4 mt-4" src="{{ im.url }}" style="max-width:720px; max-height:720px; object-fit: contain;">
-        {% endthumbnail %}
-      {% endif %}
+    <div style="text-align:center">
+      {% thumbnail post.image "1080" crop="center" upscale=True as im %}
+        <img class="card-img mb-4 mt-4" src="{{ im.url }}" style="max-width:720px; max-height:720px; width:auto; height:auto">
+      {% endthumbnail %}
     </div>
   {% endif %}
   <p><a href="{% url 'posts:post_detail' post.id %}" class="text-decoration-none" > {{ post.pub_date|date:"d E Y h:m" }} </a></p>

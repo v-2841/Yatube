@@ -233,6 +233,9 @@ class ViewsTests(TestCase):
         )
         counter_after = Follow.objects.count()
         self.assertEqual(counter_before + 1, counter_after)
+        last_sub = Follow.objects.last()
+        self.assertTrue(
+            last_sub.user == self.user and last_sub.author == test_author)
         counter_before = counter_after
         self.authorized_client.post(
             reverse(

@@ -34,7 +34,7 @@ def profile(request, username):
     following = False
     if request.user.is_authenticated:
         following = Follow.objects.filter(
-            user=request.user).filter(author__username=username)
+            user=request.user, author=user).exists()
     context = {
         'author': user,
         'page_obj': page_obj,
@@ -45,11 +45,10 @@ def profile(request, username):
 
 def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    comments = post.comments.all()
     context = {
         'post': post,
         'form': CommentForm(request.POST),
-        'comments': comments,
+        'comments': post.comments.all(),
     }
     return render(request, 'posts/post_detail.html', context)
 
@@ -119,7 +118,7 @@ def add_comment(request, post_id):
     if form.is_valid():
         comment = form.save(commit=False)
         comment.author = request.user
-        comment.post = Post.objects.get(id=post_id)
+        comment.post = get_object_or_404(Post, id=post_id)
         comment.save()
     return redirect('posts:post_detail', post_id=post_id)
 

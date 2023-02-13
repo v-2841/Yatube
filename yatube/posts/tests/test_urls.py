@@ -35,6 +35,7 @@ class PostURLTests(TestCase):
         """URL-адреса доступны по соответствующим адресам."""
         url_status = [
             ('/', self.client, HTTPStatus.OK),
+            ('/follow/', self.client, HTTPStatus.FOUND),
             (f'/group/{self.group.slug}/', self.client, HTTPStatus.OK),
             (f'/profile/{self.user.username}/', self.client, HTTPStatus.OK),
             (f'/posts/{self.post.id}/', self.client, HTTPStatus.OK),
@@ -42,6 +43,7 @@ class PostURLTests(TestCase):
             (f'/posts/{self.post.id}/delete/', self.client, HTTPStatus.FOUND),
             ('/create/', self.client, HTTPStatus.FOUND),
             ('/abracadabra/', self.client, HTTPStatus.NOT_FOUND),
+            ('/follow/', self.authorized_client, HTTPStatus.OK),
             (f'/posts/{self.post.id}/edit/',
                 self.authorized_client, HTTPStatus.FOUND),
             (f'/posts/{self.post.id}/delete/',
@@ -85,6 +87,7 @@ class PostURLTests(TestCase):
         """URL-адрес использует соответствующий шаблон."""
         template_url_name_for_guest = {
             '/': 'posts/index.html',
+            '/follow/': 'posts/follow.html',
             f'/group/{self.group.slug}/': 'posts/group_list.html',
             f'/profile/{self.user.username}/': 'posts/profile.html',
             f'/posts/{self.post.id}/': 'posts/post_detail.html',
@@ -117,6 +120,7 @@ class PostURLTests(TestCase):
     def test_following_only_auth(self):
         """Подписаться на автора может только авторизованный пользователь"""
         url_redirects = [
+            ('/follow/', self.client, '/auth/login/?next=/follow/'),
             (f'/profile/{self.author.username}/follow/', self.client,
                 f'/auth/login/?next=/profile/{self.author.username}/follow/'),
             (f'/profile/{self.author.username}/follow/',

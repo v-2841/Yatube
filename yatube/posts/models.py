@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q, F
 from django.contrib.auth import get_user_model
 
 from .validators import validate_not_empty
@@ -83,3 +84,11 @@ class Follow(models.Model):
         on_delete=models.CASCADE,
         related_name='following',
     )
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=~Q(user=F('author')), name='anti_self_sub'),
+            models.UniqueConstraint(
+                fields=['user', 'author'], name='only_one_sub'),
+        ]

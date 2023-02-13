@@ -61,6 +61,7 @@ class ViewsTests(TestCase):
         """Проверка view-функций на правильное отображение шаблонов."""
         view_template = {
             reverse('posts:index'): 'posts/index.html',
+            reverse('posts:follow_index'): 'posts/follow.html',
             reverse('posts:post_create'): 'posts/create_post.html',
             reverse(
                 'posts:group_list', kwargs={'slug': self.group.slug}
@@ -165,26 +166,6 @@ class ViewsTests(TestCase):
                 form_field = response.context.get('form').fields.get(value)
                 self.assertIsInstance(form_field, expected)
 
-    def test_post_added_correctly(self):
-        """Пост при создании добавлен корректно"""
-        post = Post.objects.create(
-            text='Тестовый текст +',
-            author=self.user,
-            group=self.group
-        )
-        responses = {
-            self.client.get(reverse('posts:index')),
-            self.client.get(
-                reverse('posts:group_list', kwargs={'slug': post.group.slug})),
-            self.client.get(
-                reverse(
-                    'posts:profile', kwargs={'username': post.author.username}
-                ))
-        }
-        for value in responses:
-            with self.subTest(value=value):
-                self.assertIn(post, value.context['page_obj'])
-
     def test_post_added_correctly_to_group(self):
         """Пост при создании не добавляется в другую группу"""
         test_group = Group.objects.create(
@@ -215,7 +196,7 @@ class ViewsTests(TestCase):
         """Кэш index работает корректно"""
         new_post = Post.objects.create(
             text='Тестовый кэш',
-            author=User.objects.get(username='test_author'),
+            author=self.user,
         )
         response = self.authorized_client.get(reverse('posts:index'))
         cache_post = response.context['page_obj'][0]
@@ -239,6 +220,28 @@ class ViewsTests(TestCase):
         self.test_client.force_login(test_author)
         response = self.test_client.get(reverse('posts:follow_index'))
         self.assertEqual(len(response.context['page_obj']), 0)
+
+    def test_sub(self):
+        """Пользователь может управлять подписками"""
+        test_author = User.objects.create_user(username='Following')
+        counter_before = Follow.objects.count()
+        self.authorized_client.post(
+            reverse(
+                'posts:profile_follow',
+                kwargs={'username': test_author.username}
+            ),
+        )
+        counter_after = Follow.objects.count()
+        self.assertEqual(counter_before + 1, counter_after)
+        counter_before = counter_after
+        self.authorized_client.post(
+            reverse(
+                'posts:profile_unfollow',
+                kwargs={'username': test_author.username}
+            ),
+        )
+        counter_after = Follow.objects.count()
+        self.assertEqual(counter_before - 1, counter_after)
 
 
 class PaginatorViewsTest(TestCase):

@@ -30,6 +30,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     '[::1]',
     'testserver',
+    'www.vita2841.pythonanywhere.com',
+    'vita2841.pythonanywhere.com',
     ['*']
 ]
 
@@ -48,6 +50,7 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'about.apps.AboutConfig',
     'sorl.thumbnail',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -58,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'yatube.urls'
@@ -136,8 +140,15 @@ LOGIN_URL = 'users:login'
 LOGIN_REDIRECT_URL = 'posts:index'
 # LOGOUT_REDIRECT_URL = 'posts:index'
 
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_USE_SSL = True
+EMAIL_USE_TLS = False
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'V-2841@yandex.ru'
+EMAIL_HOST_PASSWORD = ''
+SERVER_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Paginator
 POSTS_VIEW_NUM = 10
@@ -153,3 +164,7 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
 }
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+]

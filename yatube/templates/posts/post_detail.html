@@ -51,6 +51,10 @@
       </a>
     {% endif %}
     {% include 'posts/includes/comments.html' %}
+    {% if not user.is_authenticated %}
+      <br>
+      <a href="{% url 'users:signup' %}" class="text-decoration-none" > Зарегистрируйтесь, чтобы комментировать </a>
+    {% endif %}
   </article>
 </div>
 {% endblock %}

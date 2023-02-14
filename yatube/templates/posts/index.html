@@ -6,6 +6,7 @@
 {% load cache %}
   {% cache 1 index_page %}
     <h1>Последние обновления на сайте</h1>
+    <hr />
     {% include 'posts/includes/switcher.html' %}
     {% for post in page_obj %}
     {% include 'posts/includes/article.html' %}

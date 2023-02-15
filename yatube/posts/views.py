@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 
 from .forms import PostForm, CommentForm
-from .models import Post, Group, User, Follow
+from .models import Post, Group, User, Follow, Like
 from .utils import paginator_func
 
 
@@ -45,10 +45,15 @@ def profile(request, username):
 
 def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
+    liked = False
+    if request.user.is_authenticated:
+        liked = Like.objects.filter(
+            post=post, user=request.user).exists()
     context = {
         'post': post,
         'form': CommentForm(request.POST),
         'comments': post.comments.all(),
+        'liked': liked,
     }
     return render(request, 'posts/post_detail.html', context)
 
@@ -149,5 +154,22 @@ def profile_follow(request, username):
 @login_required
 def profile_unfollow(request, username):
     user = get_object_or_404(User, username=username)
-    Follow.objects.filter(user=request.user).filter(author=user).delete()
+    Follow.objects.filter(user=request.user, author=user).delete()
     return redirect('posts:profile', username=username)
+
+
+@login_required
+def post_like(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    Like.objects.get_or_create(
+        post=post,
+        user=request.user,
+    )
+    return redirect('posts:post_detail', post_id=post_id)
+
+
+@login_required
+def post_unlike(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    Like.objects.filter(post=post, user=request.user).delete()
+    return redirect('posts:post_detail', post_id=post_id)

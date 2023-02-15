@@ -19,7 +19,7 @@
       </li>
       {% endif %}
       <li class="list-group-item">
-        {{ post.pub_date|date:"d E Y" }}
+        {{ post.pub_date|date:"d E Y h:m" }}
       </li>
     </ul>
   </aside>
@@ -41,20 +41,31 @@
         {% endif %}
       </div>
     {% endif %}
+    <ul class="list-group list-group-horizontal-sm mb-2">
+      <li class="list-group-item"> Лайки: {{ post.likes.count }} </li>
+      <li class="list-group-item"> Комментарии: {{ post.comments.count }} </li>
+    </ul>
+    {% if not user.is_authenticated %}
+      <br>
+      <a href="{% url 'users:login' %}" class="text-decoration-none" > Войдите, чтобы поставить лайк или прокомментировать </a>
+    {% else %}
+      {% if liked %}
+        <a href="{% url 'posts:post_unlike' post.id %}" class="btn btn-secondary mb-2 mt-2 me-2" > Дизлайк </a>
+      {% else %}
+        <a href="{% url 'posts:post_like' post.id %}" class="btn btn-primary mb-2 mt-2 me-2" > Поставить 👍 </a>
+      {% endif %}
+    {% endif %}
     {% if user == post.author %}
+      <br>
       <a class="btn btn-primary mb-2 mt-2 me-2" href="{% url 'posts:post_edit' post.id %}" >
-        редактировать пост
+        Редактировать пост
       </a>
       <br>
-      <a class="btn btn-primary mb-2 mt-2 me-2" href="{% url 'posts:post_delete' post.id %}">
-        удалить пост
+      <a class="btn btn-danger mb-2 mt-2 me-2" href="{% url 'posts:post_delete' post.id %}">
+        Удалить пост
       </a>
     {% endif %}
     {% include 'posts/includes/comments.html' %}
-    {% if not user.is_authenticated %}
-      <br>
-      <a href="{% url 'users:signup' %}" class="text-decoration-none" > Зарегистрируйтесь, чтобы комментировать </a>
-    {% endif %}
   </article>
 </div>
 {% endblock %}

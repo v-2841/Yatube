@@ -21,20 +21,11 @@
       {% endif %}
     </div>
   {% endif %}
-  <p><a href="{% url 'posts:post_detail' post.id %}" class="text-decoration-none" > {{ post.pub_date|date:"d E Y" }}</a></p>
-  {% if post.comments.count > 0 %}
-    <a href="{% url 'posts:post_detail' post.id %}" class="text-decoration-none" > Комментарии ({{ post.comments.count }}) </a>
-    {% if not user.is_authenticated %}
-      <br>
-      <a href="{% url 'users:signup' %}" class="text-decoration-none" > Зарегистрируйтесь, чтобы комментировать </a>
-    {% endif %}
-  {% else %}
-  {% if user.is_authenticated %}
-    Комментариев нет. <a href="{% url 'posts:post_detail' post.id %}" class="text-decoration-none" > Будьте первым! </a>
-  {% else %}
-    Комментариев нет. <a href="{% url 'users:signup' %}" class="text-decoration-none" > Будьте первым! </a>
-  {% endif %}
-  {% endif %}
+  <p><a href="{% url 'posts:post_detail' post.id %}" class="text-decoration-none" > {{ post.pub_date|date:"d E Y h:m" }}</a></p>
+  <ul class="list-group list-group-horizontal-sm mb-2">
+    <a class="text-decoration-none list-group-item" href="{% url 'posts:post_detail' post.id %}" > Лайки: {{ post.likes.count }} </a>
+    <a class="text-decoration-none list-group-item" href="{% url 'posts:post_detail' post.id %}" > Комментарии: {{ post.comments.count }} </a>
+  </ul>
   {% if not forloop.last %}
     <hr />
   {% endif %}

@@ -51,7 +51,7 @@
           {% if user.is_authenticated %}
           <div class="dropdown nav-item">
             <button type="button" style="color: white" class="nav-link dropdown-toggle
-              {% if view_name == 'posts:profile' %}active{% endif %}
+              {% if view_name == 'posts:profile' and author == request.user %}active{% endif %}
               {% if view_name == 'posts:post_create' %}active{% endif %}
               {% if view_name == 'users:password_change_form' %}active{% endif %}
               {% if view_name == 'users:logout' %}active{% endif %}"
@@ -59,7 +59,7 @@
               {{ user.username }}
             </button>
             <ul class="dropdown-menu dropdown-menu-end text-center ms-auto" aria-labelledby="navbarDrop">
-              <li><a href="{% url 'posts:profile' user.username %}" class="dropdown-item {% if view_name == 'posts:profile' %}active{% endif %} mb-1 mt-1">Страница пользователя</a></li>
+              <li><a href="{% url 'posts:profile' user.username %}" class="dropdown-item {% if view_name == 'posts:profile' and author == request.user %}active{% endif %} mb-1 mt-1">Страница пользователя</a></li>
               <li><a href="{% url 'posts:post_create' %}" class="dropdown-item {% if view_name == 'posts:post_create' %}active{% endif %} mb-1 mt-1">Новая запись</a></li>
               <li><a href="{% url 'users:password_change_form' %}" class="dropdown-item {% if view_name == 'users:password_change_form' %}active{% endif %} mb-1 mt-1">Изменить пароль</a></li>
               <li><a href="{% url 'users:logout' %}" class="dropdown-item {% if view_name == 'users:logout' %}active{% endif %} mb-1 mt-1">Выйти</a></li>

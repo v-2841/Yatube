@@ -1,7 +1,7 @@
 {% load thumbnail %}
 {% load user_filters %}
 <article>
-  <h4><a href="{% url 'posts:profile' post.author.username %}" class="text-decoration-none" > {{ post.author.get_full_name }} </a></h4>
+  <h4><a href="{% url 'posts:profile' post.author.username %}" class="text-decoration-none" > {% if post.author.get_full_name %}{{ post.author.get_full_name }}{% else %}{{ post.author.username }}{% endif %} </a></h4>
   {% if post.group %}
     <h5>Для группы <a href="{% url 'posts:group_list' post.group.slug %}" class="text-decoration-none" > {{ post.group.title }} </a></h5>
   {% endif %}
@@ -21,7 +21,7 @@
       {% endif %}
     </div>
   {% endif %}
-  <p><a href="{% url 'posts:post_detail' post.id %}" class="text-decoration-none" > {{ post.pub_date|date:"d E Y h:m" }} </a></p>
+  <p><a href="{% url 'posts:post_detail' post.id %}" class="text-decoration-none" > {{ post.pub_date|date:"d E Y" }}</a></p>
   {% if post.comments.count > 0 %}
     <a href="{% url 'posts:post_detail' post.id %}" class="text-decoration-none" > Комментарии ({{ post.comments.count }}) </a>
     {% if not user.is_authenticated %}

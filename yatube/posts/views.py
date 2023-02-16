@@ -45,6 +45,7 @@ def profile(request, username):
 
 def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
+    likes = Like.objects.filter(post=post)
     liked = False
     if request.user.is_authenticated:
         liked = Like.objects.filter(
@@ -54,6 +55,7 @@ def post_detail(request, post_id):
         'form': CommentForm(request.POST),
         'comments': post.comments.all(),
         'liked': liked,
+        'likes': likes,
     }
     return render(request, 'posts/post_detail.html', context)
 

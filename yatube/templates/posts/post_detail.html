@@ -42,7 +42,20 @@
       </div>
     {% endif %}
     <ul class="list-group list-group-horizontal-sm mb-2">
-      <li class="list-group-item"> Лайки: {{ post.likes.count }} </li>
+      <li class="dropdown list-group-item">
+        <a class="text-decoration-none text-dark dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Лайки: {{ post.likes.count }}
+        </a>
+        <ul class="dropdown-menu">
+          {% for like in likes %}
+            {% if like.user.get_full_name %}
+            <li><a class="dropdown-item" href="{% url 'posts:profile' like.user.username %}">{{ like.user.get_full_name }}</a></li>
+            {% else %}
+            <li><a class="dropdown-item" href="{% url 'posts:profile' like.user.username %}">{{ like.user.username }}</a></li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </li>
       <li class="list-group-item"> Комментарии: {{ post.comments.count }} </li>
     </ul>
     {% if not user.is_authenticated %}

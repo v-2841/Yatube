@@ -42,6 +42,7 @@
       </div>
     {% endif %}
     <ul class="list-group list-group-horizontal-sm mb-2">
+      {% if post.likes.count > 0 %}
       <li class="dropdown list-group-item">
         <a class="text-decoration-none text-dark dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
           Лайки: {{ post.likes.count }}
@@ -54,8 +55,14 @@
             <li><a class="dropdown-item" href="{% url 'posts:profile' like.user.username %}">{{ like.user.username }}</a></li>
             {% endif %}
           {% endfor %}
+          {% if post.likes.count > likes_num %}
+            <li><a class="dropdown-item" href="{% url 'posts:post_likes' post.id %}"> Посмотреть все </a></li>
+          {% endif %}
         </ul>
       </li>
+      {% else %}
+        <li class="list-group-item"> Лайки: 0 </li>
+      {% endif %}
       <li class="list-group-item"> Комментарии: {{ post.comments.count }} </li>
     </ul>
     {% if not user.is_authenticated %}
@@ -63,7 +70,7 @@
       <a href="{% url 'users:login' %}" class="text-decoration-none" > Войдите, чтобы поставить лайк или прокомментировать </a>
     {% else %}
       {% if liked %}
-        <a href="{% url 'posts:post_unlike' post.id %}" class="btn btn-secondary mb-2 mt-2 me-2" > Дизлайк </a>
+        <a href="{% url 'posts:post_dislike' post.id %}" class="btn btn-secondary mb-2 mt-2 me-2" > Дизлайк </a>
       {% else %}
         <a href="{% url 'posts:post_like' post.id %}" class="btn btn-primary mb-2 mt-2 me-2" > Поставить 👍 </a>
       {% endif %}

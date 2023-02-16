@@ -84,6 +84,9 @@ class Follow(models.Model):
         on_delete=models.CASCADE,
         related_name='following',
     )
+    created = models.DateTimeField(
+        auto_now_add=True,
+    )
 
     class Meta:
         constraints = [
@@ -105,3 +108,12 @@ class Like(models.Model):
         on_delete=models.CASCADE,
         related_name='likes',
     )
+    created = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'post'], name='only_one_like'),
+        ]

@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
+from django.conf import settings
 
 from .forms import PostForm, CommentForm
 from .models import Post, Group, User, Follow, Like
@@ -45,7 +46,7 @@ def profile(request, username):
 
 def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    likes = Like.objects.filter(post=post)
+    likes = post.likes.order_by('-created')[:settings.LIKES_VIEW_NUM]
     liked = False
     if request.user.is_authenticated:
         liked = Like.objects.filter(
@@ -56,6 +57,7 @@ def post_detail(request, post_id):
         'comments': post.comments.all(),
         'liked': liked,
         'likes': likes,
+        'likes_num': settings.LIKES_VIEW_NUM,
     }
     return render(request, 'posts/post_detail.html', context)
 
@@ -171,7 +173,16 @@ def post_like(request, post_id):
 
 
 @login_required
-def post_unlike(request, post_id):
+def post_dislike(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     Like.objects.filter(post=post, user=request.user).delete()
     return redirect('posts:post_detail', post_id=post_id)
+
+
+def post_likes(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    context = {
+        'post': post,
+        'likes': post.likes.order_by('-created'),
+    }
+    return render(request, 'posts/post_likes.html', context)

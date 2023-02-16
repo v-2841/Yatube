@@ -10,7 +10,7 @@
   <br>
   {% if post.image %}
     <div class="text-center">
-      {% if post.image|is_portrait %}
+      {% if not post.image|is_portrait %}
         {% thumbnail post.image "x720" crop="center" as im %}
           <img class="card-img mb-4 mt-4" src="{{ im.url }}" style="max-width:720px; max-height:720px; object-fit: contain;">
         {% endthumbnail %}

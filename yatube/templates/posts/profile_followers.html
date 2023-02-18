@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+{% block title %}
+{% if profile_user.get_full_name %}
+  Подписчики пользователя {{ profile_user.get_full_name }} ({{ followers.count }})
+{% else %}
+  Подписчики пользователя {{ profile_user.username }} ({{ followers.count }})
+{% endif %}
+{% endblock %}
+{% block content %}
+{% if profile_user.get_full_name %}
+  <h3>Подписчики пользователя {{ profile_user.get_full_name }} ({{ followers.count }})</h3>
+{% else %}
+  <h3>Подписчики пользователя {{ profile_user.username }} ({{ followers.count }})</h3>
+{% endif %}
+<div class="d-flex justify-content-start">
+  <a class="btn btn-primary mb-2 mt-2 me-2" href="{% url 'posts:profile' profile_user.username %}" >
+    Вернуться к профилю
+  </a>
+</div>
+<div class="d-flex justify-content-around">
+  <ul class="list-group">
+    {% for follower in followers %}
+      {% if follower.user.get_full_name %}
+        <li class="list-group-item"><a class="text-decoration-none" href="{% url 'posts:profile' follower.user.username %}">{{ follower.user.get_full_name }}</a></li>
+      {% else %}
+        <li class="list-group-item"><a class="text-decoration-none" href="{% url 'posts:profile' follower.user.username %}">{{ follower.user.username }}</a></li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

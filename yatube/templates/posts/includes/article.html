@@ -23,8 +23,8 @@
   {% endif %}
   <p><a href="{% url 'posts:post_detail' post.id %}" class="text-decoration-none" > {{ post.pub_date|date:"d E Y h:m" }}</a></p>
   <ul class="list-group list-group-horizontal-sm mb-2">
-    <a class="text-decoration-none list-group-item" href="{% url 'posts:post_detail' post.id %}" > Лайки: {{ post.likes.count }} </a>
-    <a class="text-decoration-none list-group-item" href="{% url 'posts:post_detail' post.id %}" > Комментарии: {{ post.comments.count }} </a>
+    <a class="link-primary list-group-item" href="{% url 'posts:post_detail' post.id %}" > Лайки: {{ post.likes.count }} </a>
+    <a class="link-primary list-group-item" href="{% url 'posts:post_detail' post.id %}" > Комментарии: {{ post.comments.count }} </a>
   </ul>
   {% if not forloop.last %}
     <hr />

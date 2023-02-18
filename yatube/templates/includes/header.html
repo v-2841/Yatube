@@ -40,7 +40,7 @@
             <ul class="dropdown-menu" aria-labelledby="navbarDrop">
               <li>
                 <form action="{% url 'posts:post_search' %}" class="d-flex justify-content-center" method="get">
-                  <input type="search" placeholder="Поиск по содержимому постов" class="form-control ms-2" style="width: 300px" name="search_text" required>
+                  <input type="search" placeholder="Искать в постах" class="form-control ms-2" style="width: 175px" name="search_text" required>
                   <button class="btn btn-outline-primary mb-1 mt-1 ms-2 me-2">Поиск</button>
                 </form>
               </li>
@@ -53,6 +53,7 @@
             <button type="button" style="color: white" class="nav-link dropdown-toggle
               {% if view_name == 'posts:profile' and author == request.user %}active{% endif %}
               {% if view_name == 'posts:post_create' %}active{% endif %}
+              {% if view_name == 'posts:profile_edit' %}active{% endif %}
               {% if view_name == 'users:password_change_form' %}active{% endif %}
               {% if view_name == 'users:logout' %}active{% endif %}"
               data-bs-toggle="dropdown" aria-expanded="false">
@@ -61,6 +62,7 @@
             <ul class="dropdown-menu dropdown-menu-end text-center ms-auto" aria-labelledby="navbarDrop">
               <li><a href="{% url 'posts:profile' user.username %}" class="dropdown-item {% if view_name == 'posts:profile' and author == request.user %}active{% endif %} mb-1 mt-1">Страница пользователя</a></li>
               <li><a href="{% url 'posts:post_create' %}" class="dropdown-item {% if view_name == 'posts:post_create' %}active{% endif %} mb-1 mt-1">Новая запись</a></li>
+              <li><a href="{% url 'posts:profile_edit' user.username %}" class="dropdown-item {% if view_name == 'posts:profile_edit' %}active{% endif %} mb-1 mt-1">Редактировать профиль</a></li>
               <li><a href="{% url 'users:password_change_form' %}" class="dropdown-item {% if view_name == 'users:password_change_form' %}active{% endif %} mb-1 mt-1">Изменить пароль</a></li>
               <li><a href="{% url 'users:logout' %}" class="dropdown-item {% if view_name == 'users:logout' %}active{% endif %} mb-1 mt-1">Выйти</a></li>
             </ul>

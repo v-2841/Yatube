@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
 
-from .forms import PostForm, CommentForm
+from .forms import PostForm, CommentForm, ProfileForm
 from .models import Post, Group, User, Follow, Like
 from .utils import paginator_func
 
@@ -186,3 +186,41 @@ def post_likes(request, post_id):
         'likes': post.likes.order_by('-created'),
     }
     return render(request, 'posts/post_likes.html', context)
+
+
+def profile_followers(request, username):
+    user = get_object_or_404(User, username=username)
+    followers = Follow.objects.filter(author=user)
+    context = {
+        'profile_user': user,
+        'followers': followers,
+    }
+    return render(request, 'posts/profile_followers.html', context)
+
+
+def profile_followings(request, username):
+    user = get_object_or_404(User, username=username)
+    followings = Follow.objects.filter(user=user)
+    context = {
+        'profile_user': user,
+        'followings': followings,
+    }
+    return render(request, 'posts/profile_followings.html', context)
+
+
+@login_required
+def profile_edit(request, username):
+    user = get_object_or_404(User, username=username)
+    if user != request.user:
+        return redirect('posts:profile', username=username)
+    form = ProfileForm(
+        request.POST or None,
+        instance=user,
+    )
+    context = {
+        'form': form,
+    }
+    if not form.is_valid():
+        return render(request, 'posts/profile_edit.html', context)
+    user.save()
+    return redirect('posts:profile', username=username)

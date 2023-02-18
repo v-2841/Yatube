@@ -6,6 +6,12 @@ app_name = 'posts'
 urlpatterns = [
     path('', views.index, name='index'),
     path('profile/<str:username>/', views.profile, name='profile'),
+    path('profile/<str:username>/edit',
+         views.profile_edit, name='profile_edit'),
+    path('profile/<str:username>/followers',
+         views.profile_followers, name='profile_followers'),
+    path('profile/<str:username>/followings',
+         views.profile_followings, name='profile_followings'),
     path('posts/<int:post_id>/comment/',
          views.add_comment, name='add_comment'),
     path('posts/<int:post_id>/like/', views.post_like, name='post_like'),

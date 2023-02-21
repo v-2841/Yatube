@@ -4,7 +4,7 @@
     <h5 class="card-header">Добавить комментарий:</h5>
     <div class="card-body">
       <form method="post" action="{% url 'posts:add_comment' post.id %}">
-        {% csrf_token %}      
+        {% csrf_token %}
         <div class="form-group mb-2">
           {{ form.text|addclass:"form-control" }}
         </div>
@@ -16,7 +16,7 @@
 {% for comment in comments %}
   <div class="media mb-4">
     <div class="media-body">
-      <h5 class="mt-0">
+      <h5 class="mt-0 d-flex justify-content-start">
         <a href="{% url 'posts:profile' comment.author.username %}">
           {{ comment.author.username }}
         </a>
@@ -24,6 +24,13 @@
       <p>
         {{ comment.text }}
       </p>
+      {% if comment.author == user %}
+        <a class="btn btn-sm btn-primary mb-1 me-1" href="{% url 'posts:comment_edit' comment.id %}">Редактировать</a>
+        <a class="btn btn-sm btn-danger mb-1 me-1" href="{% url 'posts:comment_delete' comment.id %}">Удалить</a>
+      {% endif %}
     </div>
   </div>
+  {% if not forloop.last %}
+    <hr />
+  {% endif %}
 {% endfor %}

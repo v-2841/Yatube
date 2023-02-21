@@ -4,7 +4,7 @@ from django.views.decorators.http import require_http_methods
 from django.conf import settings
 
 from .forms import PostForm, CommentForm, ProfileForm
-from .models import Post, Group, User, Follow, Like
+from .models import Post, Group, User, Follow, Like, Comment
 from .utils import paginator_func, ip_timezone_cookie, get_client_ip
 
 
@@ -228,3 +228,33 @@ def profile_edit(request, username):
         return render(request, 'posts/profile_edit.html', context)
     user.save()
     return redirect('posts:profile', username=username)
+
+
+@login_required
+def comment_edit(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if comment.author != request.user:
+        return redirect('posts:post_detail', post_id=comment.post.id)
+    form = CommentForm(
+        request.POST or None,
+        instance=comment
+    )
+    context = {
+        'form': form,
+    }
+    if not form.is_valid():
+        return render(request, 'posts/comment_edit.html', context)
+    form.save()
+    return redirect('posts:post_detail', post_id=comment.post.id)
+
+
+@login_required
+def comment_delete(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if comment.author != request.user:
+        return redirect('posts:post_detail', post_id=comment.post.id)
+    if request.method == 'POST':
+        comment.delete()
+        return redirect('posts:post_detail', post_id=comment.post.id)
+    return render(request,
+                  'posts/comment_delete.html', {'comment': comment})

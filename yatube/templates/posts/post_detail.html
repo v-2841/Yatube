@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load thumbnail %}
+{% load tz %}
 {% block title %}
 Пост {{ post.text|truncatechars:30 }}
 {% endblock %}
@@ -19,7 +20,17 @@
       </li>
       {% endif %}
       <li class="list-group-item">
-        {{ post.pub_date|date:"d E Y h:m" }}
+        {% if request.COOKIES.timezone %}
+          {% timezone request.COOKIES.timezone %}
+            <p><a href="{% url 'posts:post_detail' post.id %}" class="text-decoration-none" > {{ post.pub_date|date:"d E Y H:i" }}</a></p>
+          {% endtimezone %}
+        {% elif timezone %}
+          {% timezone timezone %}
+            <p><a href="{% url 'posts:post_detail' post.id %}" class="text-decoration-none" > {{ post.pub_date|date:"d E Y H:i" }}</a></p>
+          {% endtimezone %}
+        {% else %}
+          <p><a href="{% url 'posts:post_detail' post.id %}" class="text-decoration-none" > {{ post.pub_date|date:"d E Y H:i" }}</a></p>
+        {% endif %}
       </li>
     </ul>
   </aside>

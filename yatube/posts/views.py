@@ -5,7 +5,7 @@ from django.conf import settings
 
 from .forms import PostForm, CommentForm, ProfileForm
 from .models import Post, Group, User, Follow, Like
-from .utils import paginator_func
+from .utils import paginator_func, ip_timezone_cookie
 
 
 def index(request):
@@ -14,7 +14,10 @@ def index(request):
     context = {
         'page_obj': page_obj,
     }
-    return render(request, 'posts/index.html', context)
+    if request.COOKIES.get('timezone'):
+        return render(request, 'posts/index.html', context)
+    else:
+        return ip_timezone_cookie(request, 'posts/index.html', context)
 
 
 def group_posts(request, slug):

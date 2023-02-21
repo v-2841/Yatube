@@ -1,4 +1,5 @@
 {% load thumbnail %}
+{% load tz %}
 {% load user_filters %}
 <article>
   <h4><a href="{% url 'posts:profile' post.author.username %}" class="text-decoration-none" > {% if post.author.get_full_name %}{{ post.author.get_full_name }}{% else %}{{ post.author.username }}{% endif %} </a></h4>
@@ -21,7 +22,17 @@
       {% endif %}
     </div>
   {% endif %}
-  <p><a href="{% url 'posts:post_detail' post.id %}" class="text-decoration-none" > {{ post.pub_date|date:"d E Y h:m" }}</a></p>
+  {% if request.COOKIES.timezone %}
+    {% timezone request.COOKIES.timezone %}
+      <p><a href="{% url 'posts:post_detail' post.id %}" class="text-decoration-none" > {{ post.pub_date|date:"d E Y H:i" }}</a></p>
+    {% endtimezone %}
+  {% elif timezone %}
+    {% timezone timezone %}
+      <p><a href="{% url 'posts:post_detail' post.id %}" class="text-decoration-none" > {{ post.pub_date|date:"d E Y H:i" }}</a></p>
+    {% endtimezone %}
+  {% else %}
+    <p><a href="{% url 'posts:post_detail' post.id %}" class="text-decoration-none" > {{ post.pub_date|date:"d E Y H:i" }}</a></p>
+  {% endif %}
   <ul class="list-group list-group-horizontal-sm mb-2">
     <a class="link-primary list-group-item" href="{% url 'posts:post_detail' post.id %}" > Лайки: {{ post.likes.count }} </a>
     <a class="link-primary list-group-item" href="{% url 'posts:post_detail' post.id %}" > Комментарии: {{ post.comments.count }} </a>

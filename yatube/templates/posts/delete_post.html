@@ -13,10 +13,10 @@
         <form method="post">
           {% csrf_token %}
           <div class="d-flex justify-content-center">
-            <button type="submit" class="btn btn-primary">
+            <a class="btn btn-primary me-2" href="{% url 'posts:post_detail' post_id %}">Нет</a>
+            <button type="submit" class="btn btn-danger">
               Да
             </button>&nbsp;
-            <a class="btn btn-primary" href="{% url 'posts:post_detail' post_id %}">Нет</a>
           </div>
         </form>
       </div>

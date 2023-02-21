@@ -22,12 +22,12 @@
       {% endif %}
     </div>
   {% endif %}
-  {% if request.COOKIES.timezone %}
-    {% timezone request.COOKIES.timezone %}
+  {% if timezone %}
+    {% timezone timezone %}
       <p><a href="{% url 'posts:post_detail' post.id %}" class="text-decoration-none" > {{ post.pub_date|date:"d E Y H:i" }}</a></p>
     {% endtimezone %}
-  {% elif timezone %}
-    {% timezone timezone %}
+  {% elif request.COOKIES.timezone %}
+    {% timezone request.COOKIES.timezone %}
       <p><a href="{% url 'posts:post_detail' post.id %}" class="text-decoration-none" > {{ post.pub_date|date:"d E Y H:i" }}</a></p>
     {% endtimezone %}
   {% else %}

@@ -62,7 +62,6 @@ def set_cookie(response, key, value, days_expire=7):
         domain=settings.SESSION_COOKIE_DOMAIN,
         secure=settings.SESSION_COOKIE_SECURE or None,
     )
-    return response
 
 
 def get_client_ip(request):
@@ -78,7 +77,8 @@ def ip_timezone_cookie(request, template, context):
     database = IP2Location.IP2Location(os.path.join(
         settings.BASE_DIR, "ip_db", "IP2LOCATION-LITE-DB11.IPV6.BIN"))
     try:
-        offset = database.get_timezone(get_client_ip(request))
+        ip = get_client_ip(request)
+        offset = database.get_timezone(ip)
     except Exception:
         offset = '+00:00'
     try:
@@ -87,4 +87,6 @@ def ip_timezone_cookie(request, template, context):
         timezone = 'Etc/GMT'
     context['timezone'] = timezone
     response = render(request, template, context)
-    return set_cookie(response, 'timezone', timezone)
+    set_cookie(response, 'timezone', timezone)
+    set_cookie(response, 'ip', ip)
+    return response

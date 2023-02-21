@@ -5,7 +5,7 @@ from django.conf import settings
 
 from .forms import PostForm, CommentForm, ProfileForm
 from .models import Post, Group, User, Follow, Like
-from .utils import paginator_func, ip_timezone_cookie
+from .utils import paginator_func, ip_timezone_cookie, get_client_ip
 
 
 def index(request):
@@ -14,7 +14,8 @@ def index(request):
     context = {
         'page_obj': page_obj,
     }
-    if request.COOKIES.get('timezone'):
+    if (request.COOKIES.get('timezone')
+       and request.COOKIES.get('ip') == get_client_ip(request)):
         return render(request, 'posts/index.html', context)
     else:
         return ip_timezone_cookie(request, 'posts/index.html', context)

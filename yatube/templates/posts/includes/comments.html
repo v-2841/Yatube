@@ -1,4 +1,5 @@
 {% load user_filters %}
+{% load tz %}
 {% if user.is_authenticated %}
   <div class="card my-4">
     <h5 class="card-header">Добавить комментарий:</h5>
@@ -24,6 +25,13 @@
       <p>
         {{ comment.text }}
       </p>
+      {% if request.COOKIES.timezone %}
+        {% timezone request.COOKIES.timezone %}
+          <p><small> {{ comment.created|date:"d E Y H:i" }} </small></p>
+        {% endtimezone %}
+      {% else %}
+        <p><small> {{ comment.created|date:"d E Y H:i" }} </small></p>
+      {% endif %}
       {% if comment.author == user %}
         <a class="btn btn-sm btn-primary mb-1 me-1" href="{% url 'posts:comment_edit' comment.id %}">Редактировать</a>
         <a class="btn btn-sm btn-danger mb-1 me-1" href="{% url 'posts:comment_delete' comment.id %}">Удалить</a>

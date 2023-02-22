@@ -20,11 +20,7 @@
       </li>
       {% endif %}
       <li class="list-group-item">
-        {% if timezone %}
-          {% timezone timezone %}
-            <p><a href="{% url 'posts:post_detail' post.id %}" class="text-decoration-none" > {{ post.pub_date|date:"d E Y H:i" }}</a></p>
-          {% endtimezone %}
-        {% elif request.COOKIES.timezone %}
+        {% if request.COOKIES.timezone %}
           {% timezone request.COOKIES.timezone %}
             <p><a href="{% url 'posts:post_detail' post.id %}" class="text-decoration-none" > {{ post.pub_date|date:"d E Y H:i" }}</a></p>
           {% endtimezone %}

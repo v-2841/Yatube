@@ -3,7 +3,7 @@
 {% with request.resolver_match.view_name as view_name %}
 <header>
   <nav class="navbar navbar-expand-lg navbar-light" style="background-color: lightskyblue;">
-    <div class="container">
+    <div class="container-fluid ps-5 pe-5" style="max-width:1080px;">
       <a class="navbar-brand" href="{% url 'posts:index' %}">
         <img
           src="{% static 'img/logo.png' %}"

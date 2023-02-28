@@ -77,7 +77,8 @@ def post_create(request):
     post = form.save(commit=False)
     post.author = request.user
     post.save()
-    return redirect('posts:profile', username=request.user)
+    return redirect('posts:post_detail',
+                    post_id=request.user.posts.order_by('pk').last().id)
 
 
 @login_required
@@ -105,10 +106,8 @@ def post_delete(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     if post.author != request.user:
         return redirect('posts:post_detail', post_id=post_id)
-    if request.method == 'POST':
-        post.delete()
-        return redirect('posts:profile', username=request.user)
-    return render(request, 'posts/delete_post.html', {'post_id': post_id})
+    post.delete()
+    return redirect('posts:profile', username=request.user)
 
 
 @require_http_methods(["GET"])

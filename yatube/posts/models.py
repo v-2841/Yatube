@@ -12,9 +12,21 @@ class Group(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
     description = models.TextField()
+    members = models.ManyToManyField(User, through='Membership')
 
     def __str__(self) -> str:
         return self.title
+
+
+class Membership(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    member = models.ForeignKey(User, on_delete=models.CASCADE)
+    date_joined = models.DateField(auto_now_add=True)
+    ROLES = (
+        ('a', 'administrator'),
+        ('m', 'member')
+    )
+    role = models.CharField(max_length=1, choices=ROLES, default='m')
 
 
 class Post(models.Model):

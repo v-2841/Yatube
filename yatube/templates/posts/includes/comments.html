@@ -23,7 +23,7 @@
         </a>
       </h5>
       <p>
-        {{ comment.text }}
+        {{ comment.text|linebreaksbr }}
       </p>
       {% if request.COOKIES.timezone %}
         {% timezone request.COOKIES.timezone %}

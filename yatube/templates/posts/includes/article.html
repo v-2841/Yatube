@@ -4,7 +4,7 @@
 <article>
   <h4><a href="{% url 'posts:profile' post.author.username %}" class="text-decoration-none" > {% if post.author.get_full_name %}{{ post.author.get_full_name }}{% else %}{{ post.author.username }}{% endif %} </a></h4>
   {% if post.group %}
-    <h5>Для группы <a href="{% url 'posts:group_list' post.group.slug %}" class="text-decoration-none" > {{ post.group.title }} </a></h5>
+    <h5>Для группы <a href="{% url 'posts:group_posts' post.group.slug %}" class="text-decoration-none" > {{ post.group.title }} </a></h5>
   {% endif %}
   <br>
   {{ post.text|linebreaksbr }}

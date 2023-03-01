@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
 
-from .forms import PostForm, CommentForm, ProfileForm
+from .forms import PostForm, CommentForm, ProfileForm, GroupForm
 from .models import Post, Group, User, Follow, Like, Comment
 from .utils import paginator_func, ip_timezone_cookie, get_client_ip
 
@@ -29,7 +29,21 @@ def group_posts(request, slug):
         'group': group,
         'page_obj': page_obj,
     }
-    return render(request, 'posts/group_list.html', context)
+    return render(request, 'posts/group_posts.html', context)
+
+
+@login_required
+def group_create(request):
+    form = GroupForm(
+        request.POST or None,
+    )
+    if not form.is_valid():
+        return render(request, 'posts/group_create.html', {'form': form})
+    group = form.save(commit=False)
+    group.save()
+    group = Group.objects.get(slug=group.slug)
+    group.members.add(request.user, through_defaults={'role': 'a'})
+    return redirect('posts:group_posts', slug=group.slug)
 
 
 def profile(request, username):
@@ -102,6 +116,7 @@ def post_edit(request, post_id):
 
 
 @login_required
+@require_http_methods(["POST"])
 def post_delete(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     if post.author != request.user:

@@ -22,7 +22,10 @@ urlpatterns = [
     path('posts/<int:post_id>/delete/', views.post_delete, name='post_delete'),
     path('posts/<int:post_id>/', views.post_detail, name='post_detail'),
     path('posts/search/', views.post_search, name='post_search'),
-    path('group/<slug:slug>/', views.group_posts, name='group_list'),
+    path('group/<slug:slug>/', views.group_posts, name='group_posts'),
+    #path('group/<slug:slug>/edit/', views.group_edit, name='group_edit'),
+    #path('group/<slug:slug>/delete/', views.group_edit, name='group_delete'),
+    path('group-create/', views.group_create, name='group_create'),
     path('create/', views.post_create, name='post_create'),
     path('follow/', views.follow_index, name='follow_index'),
     path(

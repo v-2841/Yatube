@@ -16,7 +16,7 @@
       </li>
       {% if post.group %}
       <li class="list-group-item">
-        Группа: <a href="{% url 'posts:group_list' post.group.slug %}" class="text-decoration-none" >{{ post.group.title }}</a>
+        Группа: <a href="{% url 'posts:group_posts' post.group.slug %}" class="text-decoration-none" >{{ post.group.title }}</a>
       </li>
       {% endif %}
       <li class="list-group-item">
@@ -102,7 +102,10 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
-              <a type="button" class="btn btn-danger" href="{% url 'posts:post_delete' post.id %}">Да</a>
+              <form method="post" action="{% url 'posts:post_delete' post.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Да</button>
+              </form>
             </div>
           </div>
         </div>

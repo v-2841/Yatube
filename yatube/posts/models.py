@@ -28,6 +28,12 @@ class Membership(models.Model):
     )
     role = models.CharField(max_length=1, choices=ROLES, default='m')
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['group', 'member'], name='only_one_sub'),
+        ]
+
 
 class Post(models.Model):
     text = models.TextField(

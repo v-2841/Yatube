@@ -4,7 +4,7 @@ from django.views.decorators.http import require_http_methods
 from django.conf import settings
 
 from .forms import PostForm, CommentForm, ProfileForm, GroupForm
-from .models import Post, Group, User, Follow, Like, Comment
+from .models import Post, Group, User, Follow, Like, Comment, Membership
 from .utils import paginator_func, ip_timezone_cookie, get_client_ip
 
 
@@ -25,9 +25,14 @@ def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
     post_list = group.posts.all()
     page_obj = paginator_func(request, post_list)
+    if Membership.objects.filter(group=group, member=request.user).exists():
+        membership = Membership.objects.get(group=group, member=request.user)
+    else:
+        membership = None
     context = {
         'group': group,
         'page_obj': page_obj,
+        'membership': membership,
     }
     return render(request, 'posts/group_posts.html', context)
 
@@ -43,6 +48,22 @@ def group_create(request):
     group.save()
     group = Group.objects.get(slug=group.slug)
     group.members.add(request.user, through_defaults={'role': 'a'})
+    return redirect('posts:group_posts', slug=group.slug)
+
+
+@login_required
+def group_follow(request, slug):
+    group = get_object_or_404(Group, slug=slug)
+    if not Membership.objects.filter(group=group, member=request.user).exists():
+        Membership.objects.create(group=group, member=request.user)
+    return redirect('posts:group_posts', slug=group.slug)
+
+
+@login_required
+def group_unfollow(request, slug):
+    group = get_object_or_404(Group, slug=slug)
+    if Membership.objects.filter(group=group, member=request.user).exists():
+        Membership.objects.filter(group=group, member=request.user).delete()
     return redirect('posts:group_posts', slug=group.slug)
 
 

@@ -19,6 +19,8 @@
     >
       Подписаться
     </a>
+  {% else %}
+    Место управления для администратора группы
   {% endif %}
   {% for post in page_obj %} {% include 'posts/includes/article.html' %} {% endfor %}
   {% include 'posts/includes/paginator.html' %}

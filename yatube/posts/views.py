@@ -25,7 +25,9 @@ def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
     post_list = group.posts.all()
     page_obj = paginator_func(request, post_list)
-    if Membership.objects.filter(group=group, member=request.user).exists():
+    if (request.user.is_authenticated
+        and Membership.objects.filter(group=group,
+                                      member=request.user).exists()):
         membership = Membership.objects.get(group=group, member=request.user)
     else:
         membership = None
@@ -54,7 +56,8 @@ def group_create(request):
 @login_required
 def group_follow(request, slug):
     group = get_object_or_404(Group, slug=slug)
-    if not Membership.objects.filter(group=group, member=request.user).exists():
+    if not Membership.objects.filter(group=group,
+                                     member=request.user).exists():
         Membership.objects.create(group=group, member=request.user)
     return redirect('posts:group_posts', slug=group.slug)
 
@@ -62,7 +65,10 @@ def group_follow(request, slug):
 @login_required
 def group_unfollow(request, slug):
     group = get_object_or_404(Group, slug=slug)
-    if Membership.objects.filter(group=group, member=request.user).exists():
+    if (Membership.objects.filter(group=group,
+                                  member=request.user).exists()
+        and Membership.objects.get(group=group,
+                                   member=request.user).role != 'a'):
         Membership.objects.filter(group=group, member=request.user).delete()
     return redirect('posts:group_posts', slug=group.slug)
 

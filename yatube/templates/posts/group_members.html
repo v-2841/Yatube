@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% load thumbnail %}
 {% block title %}
-  Участники группы {{ group.title }} ({{ members_count }})
+  Участники группы {{ group.title }} ({{ members.count }})
 {% endblock %}
 {% block content %}
-<h3>Участники группы {{ group.title }} ({{ members_count }})</h3>
+<h3>Участники группы {{ group.title }} ({{ members.count }})</h3>
 <div class="d-flex justify-content-start">
   <a class="btn btn-primary mb-2 mt-2 me-2" href="{% url 'posts:group_posts' group.slug %}" >
     Вернуться к группе
@@ -13,7 +13,7 @@
 <div class="d-flex justify-content-around">
   <ul class="list-group">
     {% for member in members %}
-      {% if member.user.get_full_name %}
+      {% if member.get_full_name %}
         <li class="list-group-item"><a class="text-decoration-none" href="{% url 'posts:profile' member.username %}">{{ member.get_full_name }}</a></li>
       {% else %}
         <li class="list-group-item"><a class="text-decoration-none" href="{% url 'posts:profile' member.username %}">{{ member.username }}</a></li>

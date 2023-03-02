@@ -35,8 +35,13 @@
         <div>Место для заголовка</div>
       {% endblock %}
     </title>
-    <script src="{% static "js/bootstrap.bundle.js" %}"></script>
     <script src="{% static "js/jquery-3.6.3.min.js" %}"></script>
+    <script src="{% static "js/bootstrap.bundle.js" %}"></script>
+    <script>
+      $(document).ready(function(){
+          $('[data-bs-toggle="popover"]').popover();  
+      });
+      </script>
   </head>
   <body>
     <header>{% include 'includes/header.html' %}</header>
@@ -47,10 +52,6 @@
         {% endblock %}
       </div>
     </main>
-    <!-- Использованы классы бустрапа: -->
-    <!-- border-top: создаёт тонкую линию сверху блока -->
-    <!-- text-center: выравнивает текстовые блоки внутри блока по центру -->
-    <!-- py-3: контент внутри размещается с отступом сверху и снизу -->
     <footer class="border-top text-center py-3">
       {% include 'includes/footer.html' %}
     </footer>

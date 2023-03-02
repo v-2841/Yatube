@@ -106,6 +106,54 @@ def group_unfollow(request, slug):
     return redirect('posts:group_posts', slug=group.slug)
 
 
+def group_administrators(request, slug):
+    group = get_object_or_404(Group, slug=slug)
+    administrators = group.members.filter(membership__role='a')
+    context = {
+        'group': group,
+        'administrators': administrators,
+    }
+    return render(request, 'posts/group_administrators.html', context)
+
+
+def group_members(request, slug):
+    group = get_object_or_404(Group, slug=slug)
+    members = group.members.all()
+    context = {
+        'group': group,
+        'members': members,
+    }
+    return render(request, 'posts/group_members.html', context)
+
+
+@login_required
+def group_add_administrator(request, slug, username):
+    group = get_object_or_404(Group, slug=slug)
+    member = get_object_or_404(User, username=username)
+    if (Membership.objects.filter(group=group,
+                                  member=request.user).exists()
+        and Membership.objects.get(group=group,
+                                   member=request.user).role == 'a'
+            and Membership.objects.filter(group=group,
+                                          member=member).exists()):
+        Membership.objects.get(group=group, member=member).role = 'a'
+    return redirect('posts:group_posts', slug=group.slug)
+
+
+@login_required
+def group_demote_administrator(request, slug):
+    group = get_object_or_404(Group, slug=slug)
+    if (Membership.objects.filter(group=group,
+                                  member=request.user).exists()
+        and Membership.objects.get(group=group,
+                                   member=request.user).role == 'a'
+            and Membership.objects.filter(group=group, role='a').count() > 1):
+        membership = Membership.objects.get(group=group, member=request.user)
+        membership.role = 'm'
+        membership.save()
+    return redirect('posts:group_posts', slug=group.slug)
+
+
 def profile(request, username):
     user = get_object_or_404(User, username=username)
     user_posts = user.posts.all()

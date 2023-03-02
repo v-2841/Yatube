@@ -5,23 +5,55 @@
 {% block content %}
   <h1>{{ group.title }}</h1>
   <p>{{ group.description }}</p>
+  <ul class="list-group list-group-horizontal-sm mb-2">
+    <li class="list-group-item">Участники: {{ members_count }}</li>
+    <li class="list-group-item">Администраторы: {{ administrators_count }}</li>
+  </ul>
   {% if membership and membership.role != "a" %}
     <a
-      class="btn btn-lg btn-secondary mb-5"
+      class="btn btn-lg btn-secondary mb-2 mt-2 me-2"
       href="{% url 'posts:group_unfollow' group.slug %}" role="button"
     >
       Отписаться
     </a>
   {% elif membership.role != "a" %}
     <a
-      class="btn btn-lg btn-primary mb-5"
+      class="btn btn-lg btn-primary mb-2 mt-2 me-2"
       href="{% url 'posts:group_follow' group.slug %}" role="button"
     >
       Подписаться
     </a>
   {% else %}
-    Место управления для администратора группы
+    <a
+      class="btn btn-primary mb-2 mt-2 me-2"
+      href="{% url 'posts:group_edit' group.slug %}" role="button"
+    >
+      Редактировать данные группы
+    </a>
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-danger mb-2 mt-2 me-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      Удалить группу
+    </button>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Удалить группу?</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
+            <form method="post" action="{% url 'posts:group_delete' group.slug %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger">Да</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   {% endif %}
+  <hr />
   {% for post in page_obj %} {% include 'posts/includes/article.html' %} {% endfor %}
   {% include 'posts/includes/paginator.html' %}
 {% endblock %}

@@ -25,16 +25,20 @@ def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
     post_list = group.posts.all()
     page_obj = paginator_func(request, post_list)
+    memberships = Membership.objects.filter(group=group)
+    administrators_count = memberships.filter(role='a').count()
+    members_count = memberships.count()
     if (request.user.is_authenticated
-        and Membership.objects.filter(group=group,
-                                      member=request.user).exists()):
-        membership = Membership.objects.get(group=group, member=request.user)
+       and memberships.filter(member=request.user).exists()):
+        membership = memberships.get(member=request.user)
     else:
         membership = None
     context = {
         'group': group,
         'page_obj': page_obj,
         'membership': membership,
+        'administrators_count': administrators_count,
+        'members_count': members_count,
     }
     return render(request, 'posts/group_posts.html', context)
 
@@ -51,6 +55,35 @@ def group_create(request):
     group = Group.objects.get(slug=group.slug)
     group.members.add(request.user, through_defaults={'role': 'a'})
     return redirect('posts:group_posts', slug=group.slug)
+
+
+@login_required
+def group_edit(request, slug):
+    group = get_object_or_404(Group, slug=slug)
+    if Membership.objects.get(group=group, member=request.user).role != 'a':
+        return redirect('posts:group_posts', slug=group.slug)
+    form = GroupForm(
+        request.POST or None,
+        instance=group,
+    )
+    context = {
+        'form': form,
+        'is_edit': True
+    }
+    if not form.is_valid():
+        return render(request, 'posts/group_create.html', context)
+    form.save()
+    return redirect('posts:group_posts', slug=group.slug)
+
+
+@login_required
+@require_http_methods(["POST"])
+def group_delete(request, slug):
+    group = get_object_or_404(Group, slug=slug)
+    if Membership.objects.get(group=group, member=request.user).role != 'a':
+        return redirect('posts:group_posts', slug=group.slug)
+    group.delete()
+    return redirect('posts:index')
 
 
 @login_required

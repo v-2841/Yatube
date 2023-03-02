@@ -40,18 +40,13 @@ class PostURLTests(TestCase):
             (f'/profile/{self.user.username}/', self.client, HTTPStatus.OK),
             (f'/posts/{self.post.id}/', self.client, HTTPStatus.OK),
             (f'/posts/{self.post.id}/edit/', self.client, HTTPStatus.FOUND),
-            (f'/posts/{self.post.id}/delete/', self.client, HTTPStatus.FOUND),
             ('/create/', self.client, HTTPStatus.FOUND),
             ('/abracadabra/', self.client, HTTPStatus.NOT_FOUND),
             ('/follow/', self.authorized_client, HTTPStatus.OK),
             (f'/posts/{self.post.id}/edit/',
                 self.authorized_client, HTTPStatus.FOUND),
-            (f'/posts/{self.post.id}/delete/',
-                self.authorized_client, HTTPStatus.FOUND),
             ('/create/', self.authorized_client, HTTPStatus.OK),
             (f'/posts/{self.post.id}/edit/',
-                self.author_client, HTTPStatus.OK),
-            (f'/posts/{self.post.id}/delete/',
                 self.author_client, HTTPStatus.OK),
         ]
         for adress, client_name, status in url_status:
@@ -61,15 +56,11 @@ class PostURLTests(TestCase):
                 )
 
     def test_url_redirect_for_not_author(self):
-        """Перенаправлние не авторов поста от его редактирования."""
+        """Перенаправление не авторов поста от его редактирования."""
         url_redirects = [
             (f'/posts/{self.post.id}/edit/', self.client,
                 f'/auth/login/?next=/posts/{self.post.id}/edit/'),
-            (f'/posts/{self.post.id}/delete/', self.client,
-                f'/auth/login/?next=/posts/{self.post.id}/delete/'),
             (f'/posts/{self.post.id}/edit/', self.authorized_client,
-                f'/posts/{self.post.id}/'),
-            (f'/posts/{self.post.id}/delete/', self.authorized_client,
                 f'/posts/{self.post.id}/'),
             (f'/posts/{self.post.id}/comment/', self.client,
                 f'/auth/login/?next=/posts/{self.post.id}/comment/'),
@@ -88,11 +79,10 @@ class PostURLTests(TestCase):
         template_url_name_for_guest = {
             '/': 'posts/index.html',
             '/follow/': 'posts/follow.html',
-            f'/group/{self.group.slug}/': 'posts/group_list.html',
+            f'/group/{self.group.slug}/': 'posts/group_posts.html',
             f'/profile/{self.user.username}/': 'posts/profile.html',
             f'/posts/{self.post.id}/': 'posts/post_detail.html',
             f'/posts/{self.post.id}/edit/': 'posts/create_post.html',
-            f'/posts/{self.post.id}/delete/': 'posts/delete_post.html',
             '/create/': 'posts/create_post.html',
         }
         for adress, expected_value in template_url_name_for_guest.items():

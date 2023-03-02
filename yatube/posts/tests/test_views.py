@@ -64,8 +64,8 @@ class ViewsTests(TestCase):
             reverse('posts:follow_index'): 'posts/follow.html',
             reverse('posts:post_create'): 'posts/create_post.html',
             reverse(
-                'posts:group_list', kwargs={'slug': self.group.slug}
-            ): 'posts/group_list.html',
+                'posts:group_posts', kwargs={'slug': self.group.slug}
+            ): 'posts/group_posts.html',
             reverse(
                 'posts:profile', kwargs={'username': self.user.username}
             ): 'posts/profile.html',
@@ -97,10 +97,10 @@ class ViewsTests(TestCase):
             with self.subTest(value=value):
                 self.assertEqual(value, expected)
 
-    def test_group_list_show_correct_context(self):
-        """Шаблон group_list сформирован с правильным контекстом."""
+    def test_group_posts_show_correct_context(self):
+        """Шаблон group_posts сформирован с правильным контекстом."""
         response = self.authorized_client.get(
-            reverse('posts:group_list', kwargs={'slug': self.group.slug}))
+            reverse('posts:group_posts', kwargs={'slug': self.group.slug}))
         first_post = response.context['page_obj'][0]
         form_fields = {
             first_post.text: self.post.text,
@@ -276,7 +276,7 @@ class PaginatorViewsTest(TestCase):
                 reverse('posts:profile', kwargs={'username': 'test_author'})
             ),
             self.client.get(
-                reverse('posts:group_list', kwargs={'slug': 'test-group'})
+                reverse('posts:group_posts', kwargs={'slug': 'test-group'})
             ),
         }
         for response in view_response:
@@ -294,7 +294,7 @@ class PaginatorViewsTest(TestCase):
                 reverse('posts:profile', kwargs={'username': 'test_author'})
             ),
             self.authorized_client.get(
-                reverse('posts:group_list', kwargs={'slug': 'test-group'})
+                reverse('posts:group_posts', kwargs={'slug': 'test-group'})
             ),
         }
         for response in view_response:
@@ -313,7 +313,7 @@ class PaginatorViewsTest(TestCase):
                 + '?page=2'
             ),
             self.client.get(
-                reverse('posts:group_list', kwargs={'slug': 'test-group'})
+                reverse('posts:group_posts', kwargs={'slug': 'test-group'})
                 + '?page=2'
             ),
         }
@@ -333,7 +333,7 @@ class PaginatorViewsTest(TestCase):
                 + '?page=2'
             ),
             self.authorized_client.get(
-                reverse('posts:group_list', kwargs={'slug': 'test-group'})
+                reverse('posts:group_posts', kwargs={'slug': 'test-group'})
                 + '?page=2'
             ),
         }

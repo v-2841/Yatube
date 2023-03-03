@@ -168,8 +168,28 @@ def group_demote_administrator(request, slug):
     return redirect('posts:group_posts', slug=group.slug)
 
 
+def groups_list(request):
+    context = {
+        'groups': Group.objects.all().order_by('title'),
+    }
+    return render(request, 'posts/groups_list.html', context)
+
+
+@login_required
+def group_follow_index(request):
+    groups = Group.objects.filter(
+        members=request.user).values_list('slug', flat=True)
+    post_list = Post.objects.filter(group__slug__in=groups)
+    page_obj = paginator_func(request, post_list)
+    context = {
+        'page_obj': page_obj,
+    }
+    return render(request, 'posts/group_follow_index.html', context)
+
+
 def profile(request, username):
     user = get_object_or_404(User, username=username)
+    groups_count = Group.objects.filter(members=user).count()
     user_posts = user.posts.all()
     page_obj = paginator_func(request, user_posts)
     following = False
@@ -180,8 +200,19 @@ def profile(request, username):
         'author': user,
         'page_obj': page_obj,
         'following': following,
+        'groups_count': groups_count,
     }
     return render(request, 'posts/profile.html', context)
+
+
+def profile_group_list(request, username):
+    user = get_object_or_404(User, username=username)
+    groups = Group.objects.filter(members=user).order_by('title')
+    context = {
+        'profile_user': user,
+        'groups': groups,
+    }
+    return render(request, 'posts/profile_group_list.html', context)
 
 
 def post_detail(request, post_id):

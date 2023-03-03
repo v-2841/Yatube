@@ -8,6 +8,7 @@
   <h1>Профиль пользователя {% if author.get_full_name %}{{ author.get_full_name }}{% else %}{{ author.username }}{% endif %}</h1>
   <ul class="list-group list-group-horizontal-sm mb-2">
     <li class="list-group-item">Публикации: {{ author.posts.count }}</li>
+    <a class="link-primary list-group-item" href="{% url 'posts:profile_group_list' author.username %}">Группы: {{ groups_count }}</a>
     <a class="link-primary list-group-item" href="{% url 'posts:profile_followers' author.username %}">Подписчики: {{ author.following.count }}</a>
     <a class="link-primary list-group-item" href="{% url 'posts:profile_followings' author.username %}">Подписки: {{ author.follower.count }}</a>
   </ul>

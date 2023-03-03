@@ -6,8 +6,8 @@
   <h1>{{ group.title }}</h1>
   <p>{{ group.description }}</p>
   <ul class="list-group list-group-horizontal-sm mb-2">
-    <a class="link-primary list-group-item" href="{% url 'posts:group_members' group.slug %}">Подписчики: {{ members_count }}</a>
-    <a class="link-primary list-group-item" href="{% url 'posts:group_administrators' group.slug %}">Подписчики: {{ administrators_count }}</a>
+    <a class="link-primary list-group-item" href="{% url 'posts:group_members' group.slug %}">Участники: {{ members_count }}</a>
+    <a class="link-primary list-group-item" href="{% url 'posts:group_administrators' group.slug %}">Администраторы: {{ administrators_count }}</a>
   </ul>
   {% if membership and membership.role != "a" %}
     <a
@@ -29,6 +29,12 @@
       href="{% url 'posts:group_edit' group.slug %}" role="button"
     >
       Редактировать данные группы
+    </a>
+    <a
+      class="btn btn-secondary mb-2 mt-2 me-2"
+      href="{% url 'posts:group_role_m' group.slug %}" role="button"
+    >
+      Добавить администратора
     </a>
     {% if administrators_count == 1 %}
       <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"

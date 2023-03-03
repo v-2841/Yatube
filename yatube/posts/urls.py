@@ -28,6 +28,8 @@ urlpatterns = [
          views.group_unfollow, name='group_unfollow'),
     path('group/<slug:slug>/members/',
          views.group_members, name='group_members'),
+    path('group/<slug:slug>/members-m/',
+         views.group_role_m, name='group_role_m'),
     path('group/<slug:slug>/administrators/',
          views.group_administrators, name='group_administrators'),
     path('group/<slug:slug>/edit/', views.group_edit, name='group_edit'),

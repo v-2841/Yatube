@@ -127,6 +127,18 @@ def group_members(request, slug):
 
 
 @login_required
+def group_role_m(request, slug):
+    group = get_object_or_404(Group, slug=slug)
+    members = User.objects.filter(
+        group=group, membership__role='m').order_by('username')
+    context = {
+        'group': group,
+        'members': members,
+    }
+    return render(request, 'posts/group_role_m.html', context)
+
+
+@login_required
 def group_add_administrator(request, slug, username):
     group = get_object_or_404(Group, slug=slug)
     member = get_object_or_404(User, username=username)
@@ -136,7 +148,9 @@ def group_add_administrator(request, slug, username):
                                    member=request.user).role == 'a'
             and Membership.objects.filter(group=group,
                                           member=member).exists()):
-        Membership.objects.get(group=group, member=member).role = 'a'
+        membership = Membership.objects.get(group=group, member=member)
+        membership.role = 'a'
+        membership.save()
     return redirect('posts:group_posts', slug=group.slug)
 
 

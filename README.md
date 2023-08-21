@@ -46,3 +46,9 @@ python3 manage.py runserver
 ```
 
 Для работы timezone потребуется [база данных](https://lite.ip2location.com/database/db11-ip-country-region-city-latitude-longitude-zipcode-timezone), которую надо поместить в yatube/ip_db.
+
+## Стек технологий:
+-   Python
+-   Django
+-   SQLite3
+-   Pytest
